@@ -1,0 +1,26 @@
+name: Build Windows App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install libraries
+        run: pip install -r requirements.txt
+
+      - name: Build the app
+        run: pyinstaller --noconsole --onedir --name VoiceTyper --collect-all faster_whisper --collect-all ctranslate2 --collect-all onnxruntime voice_typer.py
+
+      - name: Save the result
+        uses: actions/upload-artifact@v4
+        with:
+          name: VoiceTyper-Windows
+          path: dist/VoiceTyper
